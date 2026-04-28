@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - Online Bookstore</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Online Bookstore Dashboard</h1>
+        <nav>
+            <a href="{{ url_for('main.home') }}">Home</a>
+            <a href="{{ url_for('auth.logout') }}">Logout</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Welcome, {{ user.username }}!</h2>
+        <p>Role: {{ user.role }}</p>
+        <p>Email: {{ user.email }}</p>
+    </main>
+</body>
+</html>
