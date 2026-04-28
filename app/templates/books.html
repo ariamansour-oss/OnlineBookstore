@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Books - Online Bookstore</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Online Bookstore</h1>
+        <nav>
+            <a href="{{ url_for('main.home') }}">Home</a>
+            <a href="{{ url_for('main.dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('main.add_book') }}">Add Book</a>
+            <a href="{{ url_for('main.book_list') }}">View Books</a>
+            <a href="{{ url_for('auth.logout') }}">Logout</a>
+        </nav>
+    </header>
+    
+    <main>
+        <h2>Book Inventory</h2>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% if books %}
+            <table border="1" cellpadding="10" cellspacing="0" style="width:100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background-color: #2c3e50; color: white;">
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Language</th>
+                        <th>Stock</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr>
+                        <td>{{ book.id }}</td>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.category }}</td>
+                        <td>${{ book.price }}</td>
+                        <td>{{ book.language }}</td>
+                        <td>{{ book.stock }}</td>
+                        <td>
+                            <a href="{{ url_for('main.book_edit', book_id=book.id) }}">Edit</a>
+                            |
+                            <a href="{{ url_for('main.book_delete', book_id=book.id) }}" onclick="return confirm('Delete this book?')">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No books in inventory. <a href="{{ url_for('main.add_book') }}">Add a book</a></p>
+        {% endif %}
+    </main>
+</body>
+</html>
