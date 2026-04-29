@@ -1,5 +1,3 @@
-print("Loading routes.py - Version 3")
-
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from . import db
@@ -80,6 +78,30 @@ def book_delete(book_id):
     db.session.commit()
     flash('Book deleted successfully.')
     return redirect(url_for('main.book_list'))
+
+@bp.route('/search', methods=['GET', 'POST'])
+def search():
+    books = []
+    query = ""
+    
+    if request.method == 'POST':
+        query = request.form.get('search_query')
+        search_by = request.form.get('search_by')
+        
+        if search_by == 'title':
+            books = Book.query.filter(Book.title.contains(query)).all()
+        elif search_by == 'author':
+            books = Book.query.filter(Book.author.contains(query)).all()
+        elif search_by == 'category':
+            books = Book.query.filter(Book.category.contains(query)).all()
+        else:
+            books = Book.query.filter(
+                Book.title.contains(query) | 
+                Book.author.contains(query) | 
+                Book.category.contains(query)
+            ).all()
+    
+    return render_template('search.html', books=books, query=query)
 
 @bp.route('/test')
 def test():

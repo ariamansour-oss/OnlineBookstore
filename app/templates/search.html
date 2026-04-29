@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Books</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Online Bookstore</h1>
+        <nav>
+            <a href="{{ url_for('main.home') }}">Home</a>
+            <a href="{{ url_for('main.book_list') }}">Books</a>
+            <a href="{{ url_for('main.search') }}">Search</a>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('main.dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('auth.logout') }}">Logout</a>
+            {% else %}
+                <a href="{{ url_for('auth.login') }}">Login</a>
+                <a href="{{ url_for('auth.register') }}">Register</a>
+            {% endif %}
+        </nav>
+    </header>
+    
+    <main>
+        <h2>Search Books</h2>
+        
+        <form method="POST">
+            <label>Search By:</label>
+            <select name="search_by">
+                <option value="all">All Fields</option>
+                <option value="title">Title</option>
+                <option value="author">Author</option>
+                <option value="category">Category</option>
+            </select>
+            
+            <label>Keyword:</label>
+            <input type="text" name="search_query" required>
+            
+            <button type="submit">Search</button>
+        </form>
+        
+        {% if books %}
+            <h3>Results ({{ books|length }} books found)</h3>
+            <table border="1" cellpadding="8" style="width:100%; border-collapse: collapse;">
+                <tr style="background-color: #2c3e50; color: white;">
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                </tr>
+                {% for book in books %}
+                <tr>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.category }}</td>
+                    <td>${{ book.price }}</td>
+                    <td>{{ book.stock }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% elif request.method == 'POST' %}
+            <p>No books found matching "{{ query }}".</p>
+        {% endif %}
+    </main>
+</body>
+</html>
